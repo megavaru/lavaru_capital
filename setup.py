@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="lavaru_capital",
-    version="0.1.1",
+    version="0.1.2",
     author="megavaru",
     author_email="anon@anon.anon",
     description="De la megavaru pentru veri",
