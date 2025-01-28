@@ -34,10 +34,9 @@ Fetches OHLCV (Open, High, Low, Close, Volume) data for a given trading symbol a
 data = get_data(symbol="BTC/USDT", timeframe="1h", start_date="2024-01-01T00:00:00Z")
 print(data.head())
 ```
+---
 
-
-    The function uses the CCXT library to interact with the exchange's API.
-
-    Data is fetched in batches of 500 rows per request to avoid API limits.
-
-    The timestamp column is converted to a datetime index for easier time-based analysis.
+### Notes
+- The function uses the CCXT library to interact with the exchange's API.
+- Data is fetched in batches of 500 rows per request to avoid API limits.
+- The timestamp column is converted to a datetime index for easier time-based analysis.
