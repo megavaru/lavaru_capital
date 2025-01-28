@@ -153,10 +153,6 @@ Generates entry signals for long and short trades based on user-defined conditio
 
 ### Example Usage
 ```python
-# Add necessary indicators to the DataFrame
-data = add_indicators(data, length=20)
-data = add_indicators(data, length=100)
-
 # Pre-calculate the conditions efficiently using vectorized pandas operations
 long_condition = (data['SMA_20'] > data['SMA_100']) & (data['close'] > 100000)
 short_condition = (data['SMA_20'] < data['SMA_100']) & (data['close'] > 100000)
