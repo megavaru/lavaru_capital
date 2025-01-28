@@ -126,7 +126,7 @@ data = add_indicators(data, length=14, ema_length=15, adx_length=20)
 
 # View the updated DataFrame with indicators
 print(df_with_indicators.head())
-
+```
 ## `get_entry_signals` Function
 
 ### Description
