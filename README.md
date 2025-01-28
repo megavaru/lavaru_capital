@@ -84,7 +84,7 @@ Resamples OHLCV (Open, High, Low, Close, Volume) data to a different timeframe u
 ### Example Usage
 ```python
 # Fetch 1-minute OHLCV data for BTC/USDT from Binance
-data = get_data(symbol="BTC/USDT", timeframe="1m", start_date="2024-01-01T00:00:00Z")
+data = get_data(symbol="BTC/USDT", timeframe="1m", start_date="2025-01-20T00:00:00Z")
 
 # Resample the data to 1-hour timeframe
 resampled_data = resample_data(data, timeframe="1h")
