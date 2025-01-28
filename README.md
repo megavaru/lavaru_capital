@@ -3,8 +3,6 @@
 ### Description
 Fetches OHLCV (Open, High, Low, Close, Volume) data for a given trading symbol and timeframe using the [CCXT](https://github.com/ccxt/ccxt) library. The data is retrieved from a specified exchange and returned as a pandas DataFrame.
 
----
-
 ### Parameters
 | Parameter        | Type      | Default Value           | Description                                                                 |
 |------------------|-----------|-------------------------|-----------------------------------------------------------------------------|
@@ -15,8 +13,6 @@ Fetches OHLCV (Open, High, Low, Close, Volume) data for a given trading symbol a
 | `exchange_name`  | `str`     | `"binance"`             | The name of the exchange (e.g., `"binance"`).                               |
 | `delay`          | `float`   | `0.1`                   | Delay (in seconds) between API requests to avoid rate limits.               |
 
----
-
 ### Returns
 - **`df`** (`pd.DataFrame`): A pandas DataFrame containing the OHLCV data with the following columns:
   - `timestamp`: The timestamp of the candle (as a datetime index).
@@ -26,15 +22,12 @@ Fetches OHLCV (Open, High, Low, Close, Volume) data for a given trading symbol a
   - `close`: The closing price.
   - `volume`: The trading volume.
 
----
-
 ### Example Usage
 ```python
 # Fetch 1-hour OHLCV data for BTC/USDT from Binance
 data = get_data(symbol="BTC/USDT", timeframe="1h", start_date="2024-01-01T00:00:00Z")
 print(data.head())
 ```
----
 
 ### Notes
 - The function uses the CCXT library to interact with the exchange's API.
@@ -48,15 +41,11 @@ print(data.head())
 ### Description
 Resamples OHLCV (Open, High, Low, Close, Volume) data to a different timeframe using pandas. This function is useful for converting data from a smaller timeframe (e.g., 1-minute) to a larger one (e.g., 1-hour or 1-day).
 
----
-
 ### Parameters
 | Parameter        | Type           | Description                                                                 |
 |------------------|----------------|-----------------------------------------------------------------------------|
 | `data`           | `pd.DataFrame` | The input OHLCV data with a datetime index. Must include columns: `open`, `high`, `low`, `close`, `volume`. |
 | `timeframe`      | `str`          | The target timeframe for resampling. Supported values: `"15min"`, `"30min"`, `"1h"`, `"4h"`, `"1d"`, `"1w"`, `"1ME"`. |
-
----
 
 ### Returns
 - **`resampled_data`** (`pd.DataFrame`): The resampled OHLCV data with the following columns:
@@ -65,8 +54,6 @@ Resamples OHLCV (Open, High, Low, Close, Volume) data to a different timeframe u
   - `low`: The lowest price of the new candle.
   - `close`: The closing price of the new candle.
   - `volume`: The total volume of the new candle.
-
----
 
 ### Supported Timeframes
 | Timeframe | Description          |
@@ -78,8 +65,6 @@ Resamples OHLCV (Open, High, Low, Close, Volume) data to a different timeframe u
 | `"1d"`    | 1-day candles        |
 | `"1w"`    | 1-week candles       |
 | `"1ME"`   | 1-month candles      |
-
----
 
 ### Example Usage
 ```python
@@ -101,8 +86,6 @@ print(resampled_data.head())
 Adds a variety of technical indicators to a pandas DataFrame. 
 Indicators such as moving averages, RSI, ATR, ADX, and more.
 
----
-
 ### Parameters
 | Parameter       | Type          | Default Value | Description                                                                                   |
 |-----------------|---------------|---------------|-----------------------------------------------------------------------------------------------|
@@ -118,8 +101,6 @@ Indicators such as moving averages, RSI, ATR, ADX, and more.
 | `cmf_length`    | `int`         | `None`        | Lookback period for the Chaikin Money Flow (CMF). Overrides `length` if provided.             |
 | `vwma_length`   | `int`         | `None`        | Lookback period for the Volume Weighted Moving Average (VWMA). Overrides `length` if provided.|
 
----
-
 ### Returns
 - **`df`** (`pd.DataFrame`): A pandas DataFrame containing the original columns plus additional columns for the calculated technical indicators:
   - `EMA_<length>`: Exponential Moving Average.
@@ -134,8 +115,6 @@ Indicators such as moving averages, RSI, ATR, ADX, and more.
   - `Williams_%R_<length>`: Williams %R Indicator.
   - `CMF_<length>`: Chaikin Money Flow.
   - `VWMA_<length>`: Volume Weighted Moving Average.
-
----
 
 ### Example Usage
 ```python
