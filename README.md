@@ -98,7 +98,8 @@ print(resampled_data.head())
 ## `add_indicators` Function
 
 ### Description
-Adds a variety of technical indicators to a pandas DataFrame. This function is designed for use with financial time series data (e.g., stock prices, cryptocurrency data) and calculates indicators such as moving averages, RSI, ATR, ADX, and more.
+Adds a variety of technical indicators to a pandas DataFrame. 
+Indicators such as moving averages, RSI, ATR, ADX, and more.
 
 ---
 
