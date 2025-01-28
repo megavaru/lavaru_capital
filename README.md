@@ -126,3 +126,44 @@ data = add_indicators(data, length=14, ema_length=15, adx_length=20)
 
 # View the updated DataFrame with indicators
 print(df_with_indicators.head())
+
+## `get_entry_signals` Function
+
+### Description
+Generates entry signals for long and short trades based on user-defined conditions. The function identifies the first occurrence of long and short conditions, flags them as `1` for long entries and `-1` for short entries, and returns the DataFrame with an additional `entry_signal` column. 
+
+---
+
+### Parameters
+| Parameter        | Type      | Description                                                                 |
+|------------------|-----------|-----------------------------------------------------------------------------|
+| `df`             | `pd.DataFrame` | The input DataFrame containing relevant data (e.g., indicators, price, etc.). |
+| `long_condition` | `pd.Series`   | A boolean Series (or condition) that indicates long entry signals (`True` = Long Entry). This should be a vectorized condition that can be applied to the DataFrame. |
+| `short_condition`| `pd.Series`   | A boolean Series (or condition) that indicates short entry signals (`True` = Short Entry). This should be a vectorized condition that can be applied to the DataFrame. |
+
+---
+
+### Returns
+- **`pd.DataFrame`**: The original DataFrame with an additional `entry_signal` column:
+  - `1` for long entry signals.
+  - `-1` for short entry signals.
+  - `0` for no signal.
+
+---
+
+### Example Usage
+```python
+# Add necessary indicators to the DataFrame
+data = add_indicators(data, length=20)
+data = add_indicators(data, length=100)
+
+# Pre-calculate the conditions efficiently using vectorized pandas operations
+long_condition = (data['SMA_20'] > data['SMA_100']) & (data['close'] > 100000)
+short_condition = (data['SMA_20'] < data['SMA_100']) & (data['close'] > 100000)
+
+# Apply the entry signals
+df_with_signals = get_entry_signals(data, long_condition, short_condition)
+
+# View the updated DataFrame with entry signals
+print(df_with_signals.head())
+
