@@ -91,3 +91,58 @@ resampled_data = resample_data(data, timeframe="1h")
 
 # Print the resampled data
 print(resampled_data.head())
+```
+
+---
+
+## `add_indicators` Function
+
+### Description
+Adds a variety of technical indicators to a pandas DataFrame. This function is designed for use with financial time series data (e.g., stock prices, cryptocurrency data) and calculates indicators such as moving averages, RSI, ATR, ADX, and more.
+
+---
+
+### Parameters
+| Parameter       | Type          | Default Value | Description                                                                                   |
+|-----------------|---------------|---------------|-----------------------------------------------------------------------------------------------|
+| `df`            | `pd.DataFrame`| **Required**  | The input DataFrame. Must contain the columns `high`, `low`, `close`, and `volume`.           |
+| `length`        | `int`         | `14`          | Default lookback period for all indicators.                                                   |
+| `sma_length`    | `int`         | `None`        | Lookback period for the Simple Moving Average (SMA). Overrides `length` if provided.          |
+| `ema_length`    | `int`         | `None`        | Lookback period for the Exponential Moving Average (EMA). Overrides `length` if provided.     |
+| `atr_length`    | `int`         | `None`        | Lookback period for the Average True Range (ATR). Overrides `length` if provided.             |
+| `adx_length`    | `int`         | `None`        | Lookback period for the Average Directional Index (ADX). Overrides `length` if provided.      |
+| `cci_length`    | `int`         | `None`        | Lookback period for the Commodity Channel Index (CCI). Overrides `length` if provided.        |
+| `roc_length`    | `int`         | `None`        | Lookback period for the Rate of Change (ROC). Overrides `length` if provided.                 |
+| `willr_length`  | `int`         | `None`        | Lookback period for the Williams %R indicator. Overrides `length` if provided.                |
+| `cmf_length`    | `int`         | `None`        | Lookback period for the Chaikin Money Flow (CMF). Overrides `length` if provided.             |
+| `vwma_length`   | `int`         | `None`        | Lookback period for the Volume Weighted Moving Average (VWMA). Overrides `length` if provided.|
+
+---
+
+### Returns
+- **`df`** (`pd.DataFrame`): A pandas DataFrame containing the original columns plus additional columns for the calculated technical indicators:
+  - `EMA_<length>`: Exponential Moving Average.
+  - `SMA_<length>`: Simple Moving Average.
+  - `RSI_<length>`: Relative Strength Index.
+  - `ATR_<length>`: Average True Range.
+  - `VWAP`: Volume Weighted Average Price.
+  - `ADX_<length>`: Average Directional Index.
+  - `CCI_<length>`: Commodity Channel Index.
+  - `OBV`: On-Balance Volume.
+  - `ROC_<length>`: Rate of Change.
+  - `Williams_%R_<length>`: Williams %R Indicator.
+  - `CMF_<length>`: Chaikin Money Flow.
+  - `VWMA_<length>`: Volume Weighted Moving Average.
+
+---
+
+### Example Usage
+```python
+# Fetch 1-minute OHLCV data for BTC/USDT from Binance
+data = get_data(symbol="BTC/USDT", timeframe="1m", start_date="2025-01-20T00:00:00Z")
+
+# Add indicators
+data = add_indicators(data, length=14, ema_length=15, adx_length=20)
+
+# View the updated DataFrame with indicators
+print(df_with_indicators.head())
