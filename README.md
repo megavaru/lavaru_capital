@@ -40,3 +40,54 @@ print(data.head())
 - The function uses the CCXT library to interact with the exchange's API.
 - Data is fetched in batches of 500 rows per request to avoid API limits.
 - The timestamp column is converted to a datetime index for easier time-based analysis.
+
+---
+
+## `resample_data` Function
+
+### Description
+Resamples OHLCV (Open, High, Low, Close, Volume) data to a different timeframe using pandas. This function is useful for converting data from a smaller timeframe (e.g., 1-minute) to a larger one (e.g., 1-hour or 1-day).
+
+---
+
+### Parameters
+| Parameter        | Type           | Description                                                                 |
+|------------------|----------------|-----------------------------------------------------------------------------|
+| `data`           | `pd.DataFrame` | The input OHLCV data with a datetime index. Must include columns: `open`, `high`, `low`, `close`, `volume`. |
+| `timeframe`      | `str`          | The target timeframe for resampling. Supported values: `"15min"`, `"30min"`, `"1h"`, `"4h"`, `"1d"`, `"1w"`, `"1ME"`. |
+
+---
+
+### Returns
+- **`resampled_data`** (`pd.DataFrame`): The resampled OHLCV data with the following columns:
+  - `open`: The opening price of the new candle.
+  - `high`: The highest price of the new candle.
+  - `low`: The lowest price of the new candle.
+  - `close`: The closing price of the new candle.
+  - `volume`: The total volume of the new candle.
+
+---
+
+### Supported Timeframes
+| Timeframe | Description          |
+|-----------|----------------------|
+| `"15min"` | 15-minute candles    |
+| `"30min"` | 30-minute candles    |
+| `"1h"`    | 1-hour candles       |
+| `"4h"`    | 4-hour candles       |
+| `"1d"`    | 1-day candles        |
+| `"1w"`    | 1-week candles       |
+| `"1ME"`   | 1-month candles      |
+
+---
+
+### Example Usage
+```python
+# Fetch 1-minute OHLCV data for BTC/USDT from Binance
+data = get_data(symbol="BTC/USDT", timeframe="1m", start_date="2024-01-01T00:00:00Z")
+
+# Resample the data to 1-hour timeframe
+resampled_data = resample_data(data, timeframe="1h")
+
+# Print the resampled data
+print(resampled_data.head())
