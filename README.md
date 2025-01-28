@@ -32,7 +32,7 @@ Fetches OHLCV (Open, High, Low, Close, Volume) data for a given trading symbol a
 ```python
 # Fetch 1-hour OHLCV data for BTC/USDT from Binance
 data = get_data(symbol="BTC/USDT", timeframe="1h", start_date="2024-01-01T00:00:00Z")
-print(data.head())
+print(data.head())```
 
 ### Notes
 The function uses the CCXT library to interact with the exchange's API.
