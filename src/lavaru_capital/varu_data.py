@@ -5,6 +5,8 @@ import time
 import pandas_ta as ta
 import numpy as np
 
+#### Get data function ####
+
 def get_data(
     symbol: str,
     timeframe: str = "1h",
@@ -52,63 +54,122 @@ def get_data(
     df = pd.DataFrame(all_ohlcv, columns=["timestamp", "open", "high", "low", "close", "volume"])
     df["timestamp"] = pd.to_datetime(df["timestamp"], unit="ms")  # Convert timestamp to datetime
     df.set_index("timestamp", inplace=True)  # Set timestamp as the index
+    
+    # Ensure the DataFrame is sorted by time
+    df = df.sort_index()
 
     # Print the DataFrame
     return df
+
+#### Resampling function ####
+
+def resample_data(data: pd.DataFrame, timeframe: str) -> pd.DataFrame:
+    """
+    Resample OHLCV data to a different timeframe.
+
+    Supported timeframes:
+    - "15min": 15 minutes
+    - "30min": 30 minutes
+    - "1h": 1 hour
+    - "4h": 4 hours
+    - "1d": 1 day
+    - "1w": 1 week
+    - "1ME": 1 month
+
+    Parameters:
+        data (pd.DataFrame): The input OHLCV data with a datetime index.
+        timeframe (str): The target timeframe (e.g., "15min", "1h", "1d").
+
+    Returns:
+        pd.DataFrame: The resampled OHLCV data.
+    """
+    # Define the aggregation rules for OHLCV
+    aggregation_rules = {
+        "open": "first",
+        "high": "max",
+        "low": "min",
+        "close": "last",
+        "volume": "sum",
+    }
+
+    # Resample the data
+    resampled_data = data.resample(timeframe).apply(aggregation_rules).dropna()
+
+    return resampled_data
 
 #### Indicators function ####
 
 def add_indicators(
     df: pd.DataFrame,
     length: int = 14,  # Default length for all indicators
-    sma_length: int = 50,  # Specific length for SMA
-    ema_length: int = 20,  # Specific length for EMA
-    atr_length: int = 14,  # Specific length for ATR
-    adx_length: int = 14,  # Specific length for ADX
-    cci_length: int = 20,  # Specific length for CCI
-    roc_length: int = 14,  # Specific length for ROC
-    willr_length: int = 14,  # Specific length for Williams %R
-    cmf_length: int = 20,  # Specific length for CMF
-    vwma_length: int = 20,  # Specific length for VWMA
+    sma_length: int = None,  # Specific length for SMA
+    ema_length: int = None,  # Specific length for EMA
+    atr_length: int = None,  # Specific length for ATR
+    adx_length: int = None,  # Specific length for ADX
+    cci_length: int = None,  # Specific length for CCI
+    roc_length: int = None,  # Specific length for ROC
+    willr_length: int = None,  # Specific length for Williams %R
+    cmf_length: int = None,  # Specific length for CMF
+    vwma_length: int = None,  # Specific length for VWMA
 ) -> pd.DataFrame:
     """
     Add technical indicators to the DataFrame.
+    If `length` is set, it will be used as the default length for all indicators.
+    If a specific indicator length is set (e.g., `vwma_length`), it will override the default length.
     """
+    # Ensure the DataFrame is sorted by time
+    df = df.sort_index()
+
+    # Helper function to choose the length
+    def get_length(default_length, specific_length):
+        return specific_length if specific_length is not None else default_length
+
     # Calculate EMA (Exponential Moving Average)
-    df[f'EMA_{ema_length}_period'] = df['close'].ewm(span=ema_length, adjust=False).mean()
+    ema_len = get_length(length, ema_length)
+    df[f'EMA_{ema_len}'] = df['close'].ewm(span=ema_len, adjust=False).mean()
 
     # Calculate SMA (Simple Moving Average)
-    df[f'SMA_{sma_length}_period'] = df['close'].rolling(window=sma_length).mean()
+    sma_len = get_length(length, sma_length)
+    df[f'SMA_{sma_len}'] = df['close'].rolling(window=sma_len).mean()
 
     # Calculate RSI (Relative Strength Index)
-    df[f'RSI_{length}_period'] = ta.rsi(df['close'], length=length)
+    rsi_len = get_length(length, length)  # RSI uses the default `length`
+    df[f'RSI_{rsi_len}'] = ta.rsi(df['close'], length=rsi_len)
 
     # Calculate ATR (Average True Range)
-    df[f'ATR_{atr_length}_period'] = ta.atr(df['high'], df['low'], df['close'], length=atr_length)
+    atr_len = get_length(length, atr_length)
+    df[f'ATR_{atr_len}'] = ta.atr(df['high'], df['low'], df['close'], length=atr_len)
 
     # Calculate VWAP (Volume Weighted Average Price)
     df['VWAP'] = ta.vwap(df['high'], df['low'], df['close'], df['volume'])
 
     # Calculate ADX (Average Directional Index)
-    df[f'ADX_{adx_length}_period'] = ta.adx(df['high'], df['low'], df['close'], length=adx_length)['ADX_14']
+    adx_len = get_length(length, adx_length)
+    adx_result = ta.adx(df['high'], df['low'], df['close'], length=adx_len)
+    df[f'ADX_{adx_len}'] = adx_result[f'ADX_{adx_len}']
 
     # Calculate CCI (Commodity Channel Index)
-    df[f'CCI_{cci_length}_period'] = ta.cci(df['high'], df['low'], df['close'], length=cci_length)
+    cci_len = get_length(length, cci_length)
+    df[f'CCI_{cci_len}'] = ta.cci(df['high'], df['low'], df['close'], length=cci_len)
 
     # Calculate OBV (On-Balance Volume)
-    df['OBV'] = ta.obv(df['close'], df['volume']).astype('float64')
+    df['OBV'] = ta.obv(df['close'], df['volume'])
 
     # Calculate ROC (Rate of Change)
-    df[f'ROC_{roc_length}_period'] = ta.roc(df['close'], length=roc_length)
+    roc_len = get_length(length, roc_length)
+    df[f'ROC_{roc_len}'] = ta.roc(df['close'], length=roc_len)
 
     # Calculate Williams %R
-    df[f'Williams_%R_{willr_length}_period'] = ta.willr(df['high'], df['low'], df['close'], length=willr_length).astype('float64')
+    willr_len = get_length(length, willr_length)
+    df[f'Williams_%R_{willr_len}'] = ta.willr(df['high'], df['low'], df['close'], length=willr_len)
 
     # Calculate CMF (Chaikin Money Flow)
-    df[f'CMF_{cmf_length}_period'] = ta.cmf(df['high'], df['low'], df['close'], df['volume'], length=cmf_length)
+    cmf_len = get_length(length, cmf_length)
+    df[f'CMF_{cmf_len}'] = ta.cmf(df['high'], df['low'], df['close'], df['volume'], length=cmf_len)
 
     # Calculate VWMA (Volume Weighted Moving Average)
-    df[f'VWMA_{vwma_length}_period'] = ta.vwma(df['close'], df['volume'], length=vwma_length)
+    vwma_len = get_length(length, vwma_length)
+    df[f'VWMA_{vwma_len}'] = ta.vwma(df['close'], df['volume'], length=vwma_len)
 
     return df
 
